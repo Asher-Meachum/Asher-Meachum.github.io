@@ -1,0 +1,58 @@
+@mixin text($size: 100%)
+    font: $size "Times New Roman", serif
+    color: #000
+
+@mixin link()
+    a
+        color: inherit
+        text-decoration: inherit
+
+body
+    @include text
+    background-color: #dddddd
+
+    min-height: 100vh
+    display: grid
+    grid-template-rows: 50px 1fr auto
+    margin: 0
+
+header
+    background-color: #97ffbb
+
+    border-bottom: 2px solid green
+    border-radius: 5px
+
+    @include link
+
+footer
+    @include text(80%)
+
+    background-color: #bbbbbb
+
+.credits
+    text-align: center
+
+    @include link
+
+.pages
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+nav
+    align-self: center
+
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+.nav-item
+    width: calc(50% - 2em)
+    margin: 1em
+
+.container
+    margin-left: 10%
+    margin-right: 10%
+
+.home
+    margin-left: 7px
