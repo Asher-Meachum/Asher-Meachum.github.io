@@ -10,6 +10,7 @@ jobs:
     env:
       ZOLA_VERSION: "latest/edge"
       ZOLA_CHECK: false
+      ZOLA_CHECK_FLAGS: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -19,7 +20,7 @@ jobs:
       
       - name: Check Zola project
         if: env.ZOLA_CHECK == true
-        run: zola check
+        run: zola check ${{ env.ZOLA_CHECK_FLAGS }}
 
       - name: Build Zola site files
         run: zola build
