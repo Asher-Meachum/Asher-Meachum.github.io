@@ -1,37 +1,49 @@
-name: Build and deploy Zola website
+name: Build and deploy Zola site
 on:
   push:
     branches:
       - action-testing
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ZOLA_VERSION: "latest/edge"
+      ZOLA_CHECK: false
     steps:
-      - name: checkout
-        uses: actions/checkout@v6.0.1
+      - name: Checkout
+        uses: actions/checkout@v6
+      
+      - name: Configure runner environment
+        run: sudo snap install zola --channel=${{ env.ZOLA_VERSION }}
+      
+      - name: Check Zola project
+        if: env.ZOLA_CHECK == true
+        run: zola check
 
-      - name: Build Zola + upload Pages artifact
-        uses: getzola/github-pages@066755243e69f508fd1a74739fbf1a65f656c790
+      - name: Build Zola site files
+        run: zola build
+
+      - name: Upload Github Pages artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v5
         with:
-          zola_version: v0.22.1
-
+          path: public/
+  
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy to Github Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+      
